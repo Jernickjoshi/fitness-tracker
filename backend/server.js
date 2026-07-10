@@ -1,11 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 app.use(express.json());
 const cors = require('cors');
 app.use(cors());
 const { createClient } = require('@supabase/supabase-js');
-const supabaseUrl = 'https://nbmzlsmlmzffvzffquuf.supabase.co';
-const supabaseKey = 'sb_publishable_ALvvrJD_ymKOAGfB9ylyVg_F3D4FnE-';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Our first API Endpoint (The "Read" in CRUD)
