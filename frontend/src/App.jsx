@@ -71,7 +71,7 @@ function App() {
           value={date}
           onChange={(e) => {
             setDate(e.target.value);
-            setDate(setErrorMessage(""));
+            setErrorMessage("");
           }}
         />
         <select
@@ -79,7 +79,7 @@ function App() {
           value={routineType}
           onChange={(e) => {
             setRoutineType(e.target.value);
-            setRoutineType(setErrorMessage(""));
+            setErrorMessage("");
           }}
         >
           <option value="push">Push</option>
@@ -93,7 +93,7 @@ function App() {
           value={durationTime}
           onChange={(e) => {
             setDurationTime(e.target.value);
-            setDurationTime(setErrorMessage(""));
+            setErrorMessage("");
           }}
         />
         <input
@@ -103,7 +103,7 @@ function App() {
           value={weight}
           onChange={(e) => {
             setWeight(e.target.value);
-            setWeight(setErrorMessage(""));
+            setErrorMessage("");
           }}
         />
         <button type="submit" className="submit-btn">

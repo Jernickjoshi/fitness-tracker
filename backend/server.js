@@ -21,6 +21,10 @@ app.get('/api/workouts', async (req, res) => {
 });
 
 app.post('/api/workouts', async (req, res) => {
+    const { date, routine_type, duration_minutes, body_weight_kg } = req.body;
+    if(!date || !routine_type || !duration_minutes || !body_weight_kg){
+        return res.status(400).json({ error: "All fields are strictly required." });
+    }
     const newWorkout  = req.body;
     const { data, error } = await supabase.from('workouts').insert([newWorkout]).select();
     if(error) {
