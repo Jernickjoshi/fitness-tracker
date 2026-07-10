@@ -1,0 +1,57 @@
+body{
+  background-color: #121212;
+  color: white;
+  margin: 0;
+}
+.app-container{
+  max-width: 600%;
+  margin: 40px auto;
+}
+
+h1{
+  text-align: center;
+  color: #1db954;
+  margin-bottom: 30px;
+}
+.workout-form{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #1e1e1e;
+  padding: 25px;
+  border-radius: 12px;
+}
+.input-field{
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #2a2a2a;
+  color: white;
+  border: 1px solid #333;
+  font-size: 1rem;
+}
+.submit-btn{
+  background-color: #1db954;
+  color: #121212;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+.map-btn{
+  background-color: #1db954;
+  color: #121212;
+  font-weight: bold;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+.error-message{
+  background-color: red;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+}
