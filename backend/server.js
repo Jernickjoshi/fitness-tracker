@@ -3,7 +3,6 @@ const app = express();
 app.use(express.json());
 const cors = require('cors');
 app.use(cors());
-const PORT = 3000;
 const { createClient } = require('@supabase/supabase-js');
 const supabaseUrl = 'https://nbmzlsmlmzffvzffquuf.supabase.co';
 const supabaseKey = 'sb_publishable_ALvvrJD_ymKOAGfB9ylyVg_F3D4FnE-';

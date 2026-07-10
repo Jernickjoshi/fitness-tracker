@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const API_URL = "http://localhost:3000/api/workouts";
+const API_URL = "https://fitness-tracker-api-z3i9.onrender.com/api/workouts";
 function App() {
   const [workouts, setWorkouts] = useState([]);
   const [date, setDate] = useState("");
