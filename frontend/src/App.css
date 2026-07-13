@@ -55,3 +55,35 @@ h1{
   border: none;
   border-radius: 5px;
 }
+
+.auth-container {
+  display: flex;
+  flex-direction: column; /* Stacks items vertically */
+  align-items: center;    /* Centers items horizontally */
+  justify-content: center;
+  margin-top: 10vh;       /* Pushes the whole block down slightly */
+}
+
+.auth-input {
+  display: flex;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 5px;
+  background-color: #2a2a2a;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-btn{
+  margin: 3px;
+  background-color: #1db954;
+  color: #121212;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
