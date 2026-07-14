@@ -110,18 +110,25 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
   useEffect(() => {
-    if (session) {
-      fetch(API_URL, {
+    const fetchWorkouts = async () => {
+      // If there is no active session, do not try to fetch data!
+      if (!session) return;
+
+      const response = await fetch(API_URL, {
+        method: "GET",
         headers: {
+          // Flash the ID badge to the backend!
           Authorization: `Bearer ${session.access_token}`,
         },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setWorkouts(data);
-        })
-        .catch((error) => console.log("Error fetching workouts:", error));
-    }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setWorkouts(data);
+      }
+    };
+
+    fetchWorkouts();
   }, [session]);
   const sortedWorkouts = [...workouts].sort(
     (a, b) => new Date(a.date) - new Date(b.date),

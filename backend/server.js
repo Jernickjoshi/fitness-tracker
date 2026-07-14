@@ -20,7 +20,7 @@ app.get('/api/workouts', async (req, res) => {
     if (authError || !user) {
         return res.status(401).json({ error: 'Unauthorized: Invalid token' });
     }
-    const { data, error } = await supabase.from('workouts').select('*');
+    const { data, error } = await supabase.from('workouts').select('*').eq('user_id', user.id);
     if (error) {
         console.error('Error fetching workouts:', error);
         res.status(500).json({ error: 'Internal Server Error' });
