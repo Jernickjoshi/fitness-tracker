@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import supabase from "./supabaseClient";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import "./components/ProfileHeader";
+import AuthScreen from "./components/AuthScreen";
+import WorkoutForm from "./components/WorkoutForm";
+import ProgressChart from "./components/ProgressChart";
+import ProfileHeader from "./components/ProfileHeader";
+import WorkoutList from "./components/WorkoutList";
 const API_URL = "https://fitness-tracker-api-z3i9.onrender.com/api/workouts";
 function App() {
   const [workouts, setWorkouts] = useState([]);
@@ -17,10 +14,11 @@ function App() {
   const [routineType, setRoutineType] = useState("Push");
   const [durationTime, setDurationTime] = useState("");
   const [weight, setWeight] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [session, setSession] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [session, setSession] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (date === "" || durationTime === "" || weight === "") {
@@ -58,10 +56,11 @@ function App() {
     });
     setWorkouts(workouts.filter((workout) => workout.id != id));
   };
-  const handleUpdate = async (workout) => {
-    const newWeight = prompt("Enter new body weight: ", workout.body_weight_kg);
-    const updatedWorkout = { ...workout, body_weight_kg: newWeight };
-    await fetch(`${API_URL}/${workout.id}`, {
+  const handleUpdate = async (id, newWeight) => {
+    if (!newWeight) return;
+    const workoutToUpdate = workouts.find((w) => w.id === id);
+    const updatedWorkout = { ...workoutToUpdate, body_weight_kg: newWeight };
+    await fetch(`${API_URL}/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -69,9 +68,7 @@ function App() {
       },
       body: JSON.stringify(updatedWorkout),
     });
-    setWorkouts(
-      workouts.map((w) => (w.id === workout.id ? updatedWorkout : w)),
-    );
+    setWorkouts(workouts.map((w) => (w.id === id ? updatedWorkout : w)));
   };
   const handleSignUp = async () => {
     const { data, error } = await supabase.auth.signUp({
@@ -111,20 +108,25 @@ function App() {
   }, []);
   useEffect(() => {
     const fetchWorkouts = async () => {
-      // If there is no active session, do not try to fetch data!
-      if (!session) return;
+      try {
+        if (!session) return;
 
-      const response = await fetch(API_URL, {
-        method: "GET",
-        headers: {
-          // Flash the ID badge to the backend!
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+        const response = await fetch(API_URL, {
+          method: "GET",
+          headers: {
+            // Flash the ID badge to the backend!
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        setWorkouts(data);
+        if (response.ok) {
+          const data = await response.json();
+          setWorkouts(data);
+        }
+      } catch (error) {
+        console.error("Error fetching workouts:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -135,148 +137,54 @@ function App() {
   );
   if (!session) {
     return (
-      <div className="auth-container">
-        <h1>My Fitness Tracker💪</h1>
-        <input
-          className="auth-input"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="auth-input"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <div>
-          <button className="auth-btn" onClick={handleSignUp}>
-            Sign Up
-          </button>
-          <button className="auth-btn" onClick={handleLogIn}>
-            Log In
-          </button>
-          <p className="error-message">{errorMessage}</p>
-        </div>
-      </div>
+      <AuthScreen
+        email={email}
+        setEmail={setEmail}
+        password={setPassword}
+        onSignUp={handleSignUp}
+        onLogIn={handleLogIn}
+        errorMessage={errorMessage}
+      />
     );
   } else {
     return (
       <div>
-        <h1>My Fitness Tracker💪</h1>
-        <form onSubmit={handleSubmit} className="workout-form">
-          <input
-            className="input-field"
-            type="date"
-            placeholder="Date"
-            value={date}
-            onChange={(e) => {
-              setDate(e.target.value);
-              setErrorMessage("");
-            }}
-          />
-          <select
-            className="input-field"
-            value={routineType}
-            onChange={(e) => {
-              setRoutineType(e.target.value);
-              setErrorMessage("");
-            }}
-          >
-            <option value="push">Push</option>
-            <option value="pull">Pull</option>
-            <option value="legs">Legs</option>
-          </select>
-          <input
-            className="input-field"
-            type="number"
-            placeholder="Duration (minutes)"
-            value={durationTime}
-            onChange={(e) => {
-              setDurationTime(e.target.value);
-              setErrorMessage("");
-            }}
-          />
-          <input
-            className="input-field"
-            type="number"
-            placeholder="Body Weight (kg)"
-            value={weight}
-            onChange={(e) => {
-              setWeight(e.target.value);
-              setErrorMessage("");
-            }}
-          />
-          <button type="submit" className="submit-btn">
-            Add Workout
-          </button>
-          <p className="error-message">{errorMessage}</p>
-        </form>
-        {workouts.length > 0 && (
-          <div>
-            <h1>Weight Progress Chart</h1>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={sortedWorkouts}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                <XAxis dataKey="date" stroke="#fff" tick={{ fill: "#fff" }} />
-                <YAxis
-                  stroke="#fff"
-                  tick={{ fill: "#fff" }}
-                  domain={["dataMin - 2", "dataMax + 2"]}
+        <ProfileHeader session={session} onSignOut={handleSignOut} />
+        <div>
+          <h1>My Fitness Tracker💪</h1>
+          {isLoading ? (
+            <div style={{ textAlign: "center", margin: "50px 0" }}>
+              <h2>Loading your data... ⏳</h2>
+            </div>
+          ) : (
+            <>
+              <WorkoutForm
+                date={date}
+                setDate={setDate}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+                submitForm={handleSubmit}
+                routineType={routineType}
+                setRoutineType={setRoutineType}
+                weight={weight}
+                setWeight={setWeight}
+                durationTime={durationTime}
+                setDurationTime={setDurationTime}
+              />
+              {workouts.length > 0 && (
+                <ProgressChart sortedWorkouts={sortedWorkouts} />
+              )}
+              {workouts.map((workout) => (
+                <WorkoutList
+                  key={workout.id}
+                  workout={workout}
+                  onUpdate={handleUpdate}
+                  onDelete={handleDelete}
                 />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#2a2a2a",
-                    border: "1px solid #1db954",
-                    borderRadius: "8px",
-                    color: "#fff",
-                  }}
-                  itemStyle={{ color: "#1db954" }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="body_weight_kg"
-                  name="Weight(kg)"
-                  stroke="#1db954"
-                  strokeWidth={3}
-                  dot={{
-                    r: 5,
-                    fill: "#121212",
-                    stroke: "#1db954",
-                    strokeWidth: 2,
-                  }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-        {workouts.map((workout) => (
-          <div
-            key={workout.id}
-            style={{
-              border: "1px solid grey",
-              margin: "10px",
-              padding: "10px",
-            }}
-          >
-            <h2>{workout.routine_type} Day</h2>
-            <p>{workout.date}</p>
-            <p>{workout.duration_minutes} Minutes</p>
-            <p>{workout.body_weight_kg} kg</p>
-            <button
-              onClick={() => handleDelete(workout.id)}
-              className="map-btn"
-            >
-              Delete Workout
-            </button>
-            <button onClick={() => handleUpdate(workout)} className="map-btn">
-              Update weight
-            </button>
-          </div>
-        ))}
-        <button onClick={handleSignOut}>Log Out</button>
+              ))}
+            </>
+          )}
+        </div>
       </div>
     );
   }
