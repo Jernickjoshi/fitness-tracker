@@ -140,7 +140,8 @@ function App() {
       <AuthScreen
         email={email}
         setEmail={setEmail}
-        password={setPassword}
+        password={password}
+        setPassword={setPassword}
         onSignUp={handleSignUp}
         onLogIn={handleLogIn}
         errorMessage={errorMessage}
