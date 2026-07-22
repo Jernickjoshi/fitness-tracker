@@ -34,6 +34,7 @@ function WorkoutForm({
         <option value="push">Push</option>
         <option value="pull">Pull</option>
         <option value="legs">Legs</option>
+        <option value="cardio">Cardio</option>
       </select>
       <input
         className="input-field"
@@ -59,7 +60,7 @@ function WorkoutForm({
       <button type="submit" className="submit-btn">
         Add Workout
       </button>
-      <p className="error-message">{errorMessage}</p>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </form>
   );
 }

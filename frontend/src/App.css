@@ -6,6 +6,7 @@ body{
 .app-container{
   max-width: 600%;
   margin: 40px auto;
+  padding: 0 15px;
 }
 
 h1{
@@ -122,4 +123,49 @@ h1{
 
 .logout-btn:hover {
   background-color: #c62828;
+}
+
+.chart-filter{
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.filter-btn{
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid #1db954;
+  background-color: transparent;
+  color: #fff;
+}
+
+.filter-btn-active{
+  opacity: 1;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid;
+  background-color: #1db954;
+  color: #121212;
+}
+
+@media(max-width: 768px){
+  .app-container{
+    margin: 10px auto;
+    width: 100px;
+    box-sizing: border-box;
+  }
+  .chart-filter{
+    flex-wrap: wrap;
+  }
+  .workout-form{
+    padding: 15px;
+  }
+  .input-field{
+    padding: 15px;
+    font-size: 16px;
+  }
 }

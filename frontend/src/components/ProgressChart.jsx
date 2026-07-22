@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -8,11 +9,63 @@ import {
   ResponsiveContainer,
 } from "recharts";
 function ProgressChart({ sortedWorkouts }) {
+  const [filterRoutine, setFilterRoutine] = useState("All");
+  const filteredData = sortedWorkouts.filter((workout) => {
+    if (filterRoutine === "All") {
+      return true;
+    }
+    if (filterRoutine === workout.routine_type) {
+      return true;
+    }
+    return false;
+  });
   return (
     <div>
       <h1>Weight Progress Chart</h1>
+      <div className="chart-filter">
+        <button
+          className={
+            filterRoutine === "All" ? "filter-btn-active" : "filter-btn"
+          }
+          onClick={() => setFilterRoutine("All")}
+        >
+          All
+        </button>
+        <button
+          className={
+            filterRoutine === "Push" ? "filter-btn-active" : "filter-btn"
+          }
+          onClick={() => setFilterRoutine("Push")}
+        >
+          Push
+        </button>
+        <button
+          className={
+            filterRoutine === "pull" ? "filter-btn-active" : "filter-btn"
+          }
+          onClick={() => setFilterRoutine("pull")}
+        >
+          Pull
+        </button>
+        <button
+          className={
+            filterRoutine === "Legs" ? "filter-btn-active" : "filter-btn"
+          }
+          onClick={() => setFilterRoutine("Legs")}
+        >
+          Legs
+        </button>
+        <button
+          className={
+            filterRoutine === "Cardio" ? "filter-btn-active" : "filter-btn"
+          }
+          onClick={() => setFilterRoutine("Cardio")}
+        >
+          Cardio
+        </button>
+      </div>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={sortedWorkouts}>
+        <LineChart data={filteredData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#333" />
           <XAxis dataKey="date" stroke="#fff" tick={{ fill: "#fff" }} />
           <YAxis
